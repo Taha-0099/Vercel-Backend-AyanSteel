@@ -79,19 +79,19 @@ const StockEntrySchema = new mongoose.Schema(
     },
 
     notes: String,
-
+    
     supplierPaymentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SupplierPayment",
     },
   },
-  {
-    timestamps: true,
+  { 
+    timestamps: true 
   }
 );
 
-// ✅ Pre-save hook WITHOUT next()
-StockEntrySchema.pre("save", function () {
+// Pre-save hook to sync fields and set defaults
+StockEntrySchema.pre('save', function(next) {
   // Sync date fields
   if (!this.date && this.purchaseDate) {
     this.date = this.purchaseDate;
@@ -99,7 +99,7 @@ StockEntrySchema.pre("save", function () {
   if (!this.purchaseDate && this.date) {
     this.purchaseDate = this.date;
   }
-
+  
   // Sync rate fields
   if (!this.rate && this.purchaseRate) {
     this.rate = this.purchaseRate;
@@ -107,14 +107,13 @@ StockEntrySchema.pre("save", function () {
   if (!this.purchaseRate && this.rate) {
     this.purchaseRate = this.rate;
   }
-
-  // Set remainingQuantity if not set (only for new docs)
-  if (
-    this.isNew &&
-    (this.remainingQuantity === undefined || this.remainingQuantity === 0)
-  ) {
+  
+  // Set remainingQuantity if not set
+  if (this.isNew && (this.remainingQuantity === undefined || this.remainingQuantity === 0)) {
     this.remainingQuantity = this.quantity || 0;
   }
+  
+  next();
 });
 
 module.exports = mongoose.model("StockEntry", StockEntrySchema);
