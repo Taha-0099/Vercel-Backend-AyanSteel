@@ -1,54 +1,33 @@
-// server.js
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./db.js";
+import ledgerRoutes from "./routes/ledgerRoutes.js";
 
-const ledgerRoutes = require("./routes/ledgerRoutes");
-const clientRoutes = require("./routes/clientRoutes");
-const companyBalanceRoutes = require("./routes/companyBalanceRoutes");
-const stockRoutes = require("./routes/stockRoutes");
-const supplierLedgerRoutes = require("./routes/supplierLedgerRoutes");
-const supplierPaymentRoutes = require("./routes/supplierPaymentRoutes");
+dotenv.config();
+
 const app = express();
 
-app.use(cors());
+/* ✅ CORS FIX */
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
+
 app.use(express.json());
 
-// ----- MongoDB -----
-const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/ledger_db";
+/* ✅ Connect DB ONCE */
+connectDB();
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("Mongo connection error", err));
+/* ✅ Routes */
+app.use("/api/ledger", ledgerRoutes);
 
-// ----- ROUTES -----
-
-// 🔹 Ledger routes – mount on BOTH prefixes
-app.use("/api/ledger", ledgerRoutes);   // new style
-app.use("/ledger", ledgerRoutes);       // old style (for existing calls)
-
-// 🔹 Client routes – same idea if you use them with/without /api
-app.use("/api/clients", clientRoutes);
-app.use("/clients", clientRoutes);
-
-// 🔹 Company balance routes
-app.use("/api/company-balance", companyBalanceRoutes);
-
-
-app.use("/api/supplier-ledger", supplierLedgerRoutes);
-app.use("/api/supplier-payments", supplierPaymentRoutes);
-
-// health check
-
-app.use("/api/stock", stockRoutes);
+/* ✅ Health check */
 app.get("/", (req, res) => {
-  res.send("Ledger backend running");
+  res.send("API is running");
 });
 
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+/* ❌ DO NOT USE app.listen() ON VERCEL */
+export default app;
