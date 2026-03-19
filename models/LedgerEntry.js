@@ -76,12 +76,20 @@ const LedgerEntrySchema = new mongoose.Schema(
     },
 
     // PAYMENT FIELDS
+<<<<<<< HEAD
   paymentType: {
   type: String,
   enum: ["---", "CASH", "BANK", "CHEQUE"],
   default: "CASH"
 },
 
+=======
+    paymentType: {
+      type: String,
+      enum: ["CASH", "BANK", "CHEQUE"],
+      default: "CASH"
+    },
+>>>>>>> 21be0160 (Backend initial commit)
 
     bankName: {
       type: String,

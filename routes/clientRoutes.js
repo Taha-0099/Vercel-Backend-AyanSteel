@@ -1,5 +1,9 @@
 const express = require("express");
+<<<<<<< HEAD
 const Client = require("../models/Clients");
+=======
+const Client = require("../models/Client");
+>>>>>>> 21be0160 (Backend initial commit)
 const router = express.Router();
 
 // create

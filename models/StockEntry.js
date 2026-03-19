@@ -79,12 +79,17 @@ const StockEntrySchema = new mongoose.Schema(
     },
 
     notes: String,
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 21be0160 (Backend initial commit)
     supplierPaymentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SupplierPayment",
     },
   },
+<<<<<<< HEAD
   { 
     timestamps: true 
   }
@@ -92,6 +97,15 @@ const StockEntrySchema = new mongoose.Schema(
 
 // Pre-save hook to sync fields and set defaults
 StockEntrySchema.pre('save', function(next) {
+=======
+  {
+    timestamps: true,
+  }
+);
+
+// ✅ Pre-save hook WITHOUT next()
+StockEntrySchema.pre("save", function () {
+>>>>>>> 21be0160 (Backend initial commit)
   // Sync date fields
   if (!this.date && this.purchaseDate) {
     this.date = this.purchaseDate;
@@ -99,7 +113,11 @@ StockEntrySchema.pre('save', function(next) {
   if (!this.purchaseDate && this.date) {
     this.purchaseDate = this.date;
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 21be0160 (Backend initial commit)
   // Sync rate fields
   if (!this.rate && this.purchaseRate) {
     this.rate = this.purchaseRate;
@@ -107,6 +125,7 @@ StockEntrySchema.pre('save', function(next) {
   if (!this.purchaseRate && this.rate) {
     this.purchaseRate = this.rate;
   }
+<<<<<<< HEAD
   
   // Set remainingQuantity if not set
   if (this.isNew && (this.remainingQuantity === undefined || this.remainingQuantity === 0)) {
@@ -117,3 +136,16 @@ StockEntrySchema.pre('save', function(next) {
 });
 
 module.exports = mongoose.model("StockEntry", StockEntrySchema);
+=======
+
+  // Set remainingQuantity if not set (only for new docs)
+  if (
+    this.isNew &&
+    (this.remainingQuantity === undefined || this.remainingQuantity === 0)
+  ) {
+    this.remainingQuantity = this.quantity || 0;
+  }
+});
+
+module.exports = mongoose.model("StockEntry", StockEntrySchema);
+>>>>>>> 21be0160 (Backend initial commit)
